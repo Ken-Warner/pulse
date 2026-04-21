@@ -1,0 +1,55 @@
+services:
+  client:
+    build:
+      context: .
+      dockerfile: client/dockerfile
+    image: kenw1991/pulse-client #probably gonna need our own container repo for this project unless we wanna use this one
+    ports:
+      - "80:80"
+    environment:
+      PORT: "80"
+    depends_on:
+      # db:
+      #   condition: service_healthy
+      api:
+        condition: service_healthy
+  db:
+    build: ./db/
+    image: kenw1991/pulse-db
+    expose:
+      - ${DB_PORT}
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - ./data:var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+  api:
+    build: ./api/
+    image: kenw1991/pulse-api
+    ports:
+      - "8080:80"
+    environment:
+      PORT: ${PORT}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      SESSION_SECRET: ${SESSION_SECRET}
+      NODE_ENV: ${NODE_ENV}
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health/readiness"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s

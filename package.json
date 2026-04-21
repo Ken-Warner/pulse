@@ -1,0 +1,27 @@
+{
+  "name": "pulse",
+  "private": true,
+  "description": "Wellness tracker and daily survey application.",
+  "homepage": "https://github.com/Ken-Warner/pulse#readme",
+  "bugs": {
+    "url": "https://github.com/Ken-Warner/pulse/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ken-Warner/pulse.git"
+  },
+  "workspaces": [
+    "shared",
+    "api",
+    "client"
+  ],
+  "license": "ISC",
+  "author": "KW",
+  "type": "module",
+  "scripts": {
+    "build:all": "npm run build --workspaces",
+    "build:api": "npm run build --workspace=api",
+    "build:shared": "npm run build --workspace=shared",
+    "build:client": "npm run build --workspace=client"
+  }
+}
