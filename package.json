@@ -22,6 +22,9 @@
     "build:all": "npm run build --workspaces",
     "build:api": "npm run build --workspace=api",
     "build:shared": "npm run build --workspace=shared",
-    "build:client": "npm run build --workspace=client"
+    "build:client": "npm run build --workspace=client",
+    "docker:build:up": "docker compose -f compose.local.yaml up --build -d",
+    "docker:build:client:up": "docker compose -f compose.frontend.yaml up --build -d",
+    "docker:build:server:up": "docker compose -f compose.backend.yaml up --build -d"
   }
 }

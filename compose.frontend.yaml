@@ -1,0 +1,32 @@
+services:
+  client:
+    build:
+      context: .
+      dockerfile: client/dockerfile
+      args:
+        APP_ENV: development
+    image: kenw1991/pulse-client #probably gonna need our own container repo for this project unless we wanna use this one
+    ports:
+      - "80:80"
+    environment:
+      PORT: "80"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    build: ./db/
+    image: kenw1991/pulse-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    volumes:
+      - ./data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s

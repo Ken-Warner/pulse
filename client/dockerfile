@@ -1,12 +1,20 @@
 FROM node:alpine
 
+ARG APP_ENV=production
+
 WORKDIR /app
 
 ENV PORT=80
 
 COPY . ./
 WORKDIR /app/client
-RUN npm install && npm run build
+RUN if [ "$APP_ENV" = "development" ]; then \
+    echo "Running test build..."; \
+    npm install && npm run build:development; \
+  else \
+    echo "Running production build..."; \
+    npm install && npm run build; \
+  fi
 
 USER node
 

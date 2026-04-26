@@ -1,5 +1,5 @@
 import express from "express";
-import { healthCheck, livenessCheck } from "./probesController.js";
+import { healthCheck, livenessCheck } from "./probes.controller.js";
 
 const healthRouter = express.Router();
 

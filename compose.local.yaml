@@ -4,14 +4,12 @@ services:
       context: .
       dockerfile: client/dockerfile
       args:
-        APP_ENV: production
+        APP_ENV: development
     image: kenw1991/pulse-client #probably gonna need our own container repo for this project unless we wanna use this one
     ports:
       - "80:80"
     environment:
       PORT: "80"
-    networks:
-      - nginx_default
     depends_on:
       db:
         condition: service_healthy
@@ -28,8 +26,6 @@ services:
       POSTGRES_DB: ${DB_DATABASE}
     volumes:
       - ./data:/var/lib/postgresql
-    networks:
-      - nginx_default
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -49,9 +45,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       SESSION_SECRET: ${SESSION_SECRET}
-      NODE_ENV: ${NODE_ENV}
-    networks:
-      - nginx_default
+      NODE_ENV: development
     depends_on:
       db:
         condition: service_healthy
@@ -61,7 +55,3 @@ services:
       retries: 5
       start_period: 30s
       timeout: 10s
-networks:
-  nginx_default:
-    name: nginxproxymanager_default
-    external: true
